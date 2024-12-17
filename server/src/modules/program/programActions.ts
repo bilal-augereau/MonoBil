@@ -1,6 +1,7 @@
 // Some data to make the trick
+import programRepository from "./programRepository";
 
-const programs = [
+/* const programs = [
   {
     id: 1,
     title: "The Good Place",
@@ -21,13 +22,13 @@ const programs = [
     country: "Allemagne",
     year: 2017,
   },
-];
+]; */
 
 // Declare the action
 
 import type { RequestHandler } from "express";
 
-const browse: RequestHandler = (req, res) => {
+/* const browse: RequestHandler = (req, res) => {
   if (req.query.q != null) {
     const filteredPrograms = programs.filter((program) =>
       program.synopsis.includes(req.query.q as string),
@@ -37,12 +38,19 @@ const browse: RequestHandler = (req, res) => {
   } else {
     res.json(programs);
   }
+}; */
+
+const browse: RequestHandler = async (req, res) => {
+  const programsFromDB = await programRepository.readAll();
+
+  res.json(programsFromDB);
 };
 
-const read: RequestHandler = (req, res) => {
+const read: RequestHandler = async (req, res) => {
   const parsedId = Number.parseInt(req.params.id);
 
-  const program = programs.find((p) => p.id === parsedId);
+  const programsFromDB = await programRepository.readAll();
+  const program = programsFromDB.find((p) => p.id === parsedId);
 
   if (program != null) {
     res.json(program);
