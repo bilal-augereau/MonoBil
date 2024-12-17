@@ -1,6 +1,7 @@
 // Some data to make the trick
+import categoryRepository from "./categoryRepository";
 
-const categories = [
+/* const categories = [
   {
     id: 1,
     name: "Comédie",
@@ -9,14 +10,14 @@ const categories = [
     id: 2,
     name: "Science-Fiction",
   },
-];
+]; */
 
 // Declare the actions
 
 /* Here you code */
 import type { RequestHandler } from "express";
 
-const browse: RequestHandler = (req, res) => {
+/* const browse: RequestHandler = async (req, res) => {
   if (req.query.q != null) {
     const filteredCategories = categories.filter((category) =>
       category.name.includes(req.query.q as string),
@@ -26,12 +27,19 @@ const browse: RequestHandler = (req, res) => {
   } else {
     res.json(categories);
   }
+}; */
+
+const browse: RequestHandler = async (req, res) => {
+  const categoriesFromDB = await categoryRepository.readAll();
+
+  res.json(categoriesFromDB);
 };
 
-const read: RequestHandler = (req, res) => {
+const read: RequestHandler = async (req, res) => {
   const parsedId = Number.parseInt(req.params.id);
 
-  const category = categories.find((p) => p.id === parsedId);
+  const categoriesFromDB = await categoryRepository.readAll();
+  const category = categoriesFromDB.find((p) => p.id === parsedId);
 
   if (category != null) {
     res.json(category);
